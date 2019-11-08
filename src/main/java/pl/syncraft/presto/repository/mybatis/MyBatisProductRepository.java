@@ -21,7 +21,7 @@ public class MyBatisProductRepository implements ProductRepository {
         try (SqlSession session = MyBatisUtil.buildSessionFactory().openSession()) {
             product = session.selectOne("Product.getProduct", id);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         return Optional.ofNullable(product);
@@ -29,13 +29,12 @@ public class MyBatisProductRepository implements ProductRepository {
 
     @Override
     public List<Product> find(ProductFilter filter) {
+        System.out.println("filter: " + filter);
         try (SqlSession session = MyBatisUtil.buildSessionFactory().openSession()) {
             return session.selectList("findProducts", filter);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
-        return null;
     }
 
     @Override
@@ -49,7 +48,7 @@ public class MyBatisProductRepository implements ProductRepository {
 
             session.commit();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         return product;
@@ -61,7 +60,7 @@ public class MyBatisProductRepository implements ProductRepository {
             session.delete("deleteProduct", id);
             session.commit();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 }

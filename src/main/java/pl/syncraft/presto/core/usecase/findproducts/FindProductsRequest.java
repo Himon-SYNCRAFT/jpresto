@@ -1,6 +1,7 @@
 package pl.syncraft.presto.core.usecase.findproducts;
 
 import lombok.AllArgsConstructor;
+import pl.syncraft.presto.core.Filter;
 
 /**
  * @author Daniel Zawlocki
@@ -8,7 +9,7 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public class FindProductsRequest {
-    public final Integer productId;
-    public final String sku;
-    public final String name;
+    public final Filter<Integer> productId;
+    public final Filter<String> sku;
+    public final Filter<String> name;
 }

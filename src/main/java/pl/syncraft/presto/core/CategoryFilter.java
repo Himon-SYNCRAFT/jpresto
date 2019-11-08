@@ -14,6 +14,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 public class CategoryFilter {
-    public Integer id;
-    public String name;
+    public Filter<Integer> id;
+    public Filter<String> name;
 }

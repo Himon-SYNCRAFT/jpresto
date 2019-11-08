@@ -1,6 +1,9 @@
 package pl.syncraft.presto.web;
 
-import pl.syncraft.presto.core.ProductFilter;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import pl.syncraft.presto.core.Filter;
 import pl.syncraft.presto.core.entity.Product;
 import pl.syncraft.presto.core.usecase.Response;
 import pl.syncraft.presto.core.usecase.addnewproduct.AddNewProduct;
@@ -13,12 +16,11 @@ import pl.syncraft.presto.core.usecase.removeproduct.RemoveProduct;
 import pl.syncraft.presto.core.usecase.removeproduct.RemoveProductRequest;
 import pl.syncraft.presto.core.usecase.updateproduct.UpdateProduct;
 import pl.syncraft.presto.core.usecase.updateproduct.UpdateProductRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import pl.syncraft.presto.web.dto.ProductDto;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Daniel Zawlocki
@@ -74,14 +76,58 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/find")
-    public ResponseEntity findProducts(@RequestBody ProductFilter filter) {
+    @GetMapping
+    public ResponseEntity findProducts(@RequestParam(value = "search", required = false) String search) {
         FindProducts findProducts = useCaseFactory.getUseCase(FindProducts.class);
 
+        Pattern pattern = Pattern.compile("(\\w+?)(!:|>:|<:|>|<|:)(\\w+?),");
+        Matcher matcher = pattern.matcher(search + ",");
+
+        Filter<String> filterName = new Filter<>();
+        Filter<String> filterSku = new Filter<>();
+        Filter<Integer> filterProductId = new Filter<>();
+
+        while (matcher.find()) {
+            String key = matcher.group(1);
+            String operator = matcher.group(2);
+            String value = matcher.group(3);
+
+            switch (key) {
+                case "name":
+                    filterName.setOperator(operator);
+
+                    if (operator.equals(":")) {
+                        filterName.setOperator(Filter.Operator.LIKE);
+                    } else if (operator.equals("!:")) {
+                        filterName.setOperator(Filter.Operator.NOT_LIKE);
+                    }
+
+                    filterName.setValue('%' + value + '%');
+                    break;
+
+                case "sku":
+                    filterSku.setOperator(operator);
+
+                    if (operator.equals(":")) {
+                        filterSku.setOperator(Filter.Operator.LIKE);
+                    } else if (operator.equals("!:")) {
+                        filterSku.setOperator(Filter.Operator.NOT_LIKE);
+                    }
+
+                    filterSku.setValue('%' + value + '%');
+                    break;
+
+                case "id":
+                    filterProductId.setOperator(operator);
+                    filterProductId.setValue(Integer.valueOf(value));
+                    break;
+            }
+        }
+
         Response<List<Product>> response = findProducts.execute(new FindProductsRequest(
-                filter.id,
-                filter.sku,
-                filter.name
+                filterProductId,
+                filterSku,
+                filterName
         ));
 
         if (response.hasErrors()) {

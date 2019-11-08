@@ -24,9 +24,45 @@
         LEFT JOIN product_categories pc ON pc.product_id = p.id
         LEFT JOIN categories cat ON cat.id = pc.category_id
         <where>
-            <if test='id != null'>p.id = #{id}</if>
-            <if test='sku != null'>AND p.sku like #{sku}</if>
-            <if test='name != null'>AND p.name like #{name}</if>
+            1 = 1
+            <if test='id.value != null'>
+                <choose>
+                    <when test="id.operator.value == 'equals'">
+                        AND p.id = #{id.value}
+                    </when>
+                    <when test="id.operator.value == 'not equals'">
+                        AND p.id != #{id.value}
+                    </when>
+                    <when test="id.operator.value == 'greater'">
+                        AND p.id > #{id.value}
+                    </when>
+                    <when test="id.operator.value == 'greater_or_equals'">
+                        AND p.id >= #{id.value}
+                    </when>
+                    <when test="id.operator.value == 'lesser'">
+                        AND p.id &lt; #{id.value}
+                    </when>
+                    <when test="id.operator.value == 'lesser_or_equals'">
+                        AND p.id &lt;= #{id.value}
+                    </when>
+                </choose>
+            </if>
+            <if test='name.value != null'>
+                <if test="name.operator.value == 'like'">
+                    AND p.name like #{name.value}
+                </if>
+                <if test="name.operator.value == 'not_like'">
+                    AND p.name not like #{name.value}
+                </if>
+            </if>
+            <if test='sku.value != null'>
+                <if test="sku.operator.value == 'like'">
+                    AND p.sku like #{sku.value}
+                </if>
+                <if test="sku.operator.value == 'not_like'">
+                    AND p.sku not like #{sku.value}
+                </if>
+            </if>
         </where>
     </select>
     <update id="updateProduct">

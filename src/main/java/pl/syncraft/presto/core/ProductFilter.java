@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 public class ProductFilter {
-    public Integer id;
-    public String name;
-    public String sku;
+    public Filter<Integer> id;
+    public Filter<String> name;
+    public Filter<String> sku;
 }

@@ -1,6 +1,8 @@
 package pl.syncraft.presto.core.usecase;
 
+import org.apache.ibatis.session.SqlSession;
 import pl.syncraft.presto.core.PrestoError;
+import pl.syncraft.presto.repository.mybatis.MyBatisUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,9 +28,11 @@ public abstract class UseCase<Request, E> {
             return response;
         }
 
-        try {
+        try (SqlSession session = MyBatisUtil.buildSessionFactory().openSession()) {
+            System.out.println(session);
             E entity = process(request);
             response.setData(entity);
+            session.commit();
         } catch (Exception e) {
             response.addError(e.getMessage());
         }
