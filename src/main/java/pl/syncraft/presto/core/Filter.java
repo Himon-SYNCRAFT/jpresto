@@ -13,12 +13,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Filter<T> {
     public enum Operator {
-        EQUALS("equals"),
-        NOT_EQUALS("not_equals"),
+        EQUAL("equal"),
+        NOT_EQUAL("not_equal"),
         GREATER("greater"),
         LESSER("lesser"),
-        GREATER_OR_EQUALS("greater_or_equals"),
-        LESSER_OR_EQUALS("lesser_or_equals"),
+        GREATER_OR_EQUAL("greater_or_equal"),
+        LESSER_OR_EQUAL("lesser_or_equal"),
         LIKE("like"),
         NOT_LIKE("not_like");
 
@@ -34,7 +34,7 @@ public class Filter<T> {
     }
 
     private T value;
-    private Operator operator = Operator.EQUALS;
+    private Operator operator = Operator.EQUAL;
 
     public Filter(T value) {
         this.value = value;
@@ -47,7 +47,7 @@ public class Filter<T> {
 
     public void setOperator(Operator operator) {
         if (operator == null) {
-            this.operator = Operator.EQUALS;
+            this.operator = Operator.EQUAL;
         } else {
             this.operator = operator;
         }
@@ -60,7 +60,7 @@ public class Filter<T> {
                 break;
 
             case ">:":
-                setOperator(Operator.GREATER_OR_EQUALS);
+                setOperator(Operator.GREATER_OR_EQUAL);
                 break;
 
             case "<":
@@ -68,7 +68,7 @@ public class Filter<T> {
                 break;
 
             case "<:":
-                setOperator(Operator.LESSER_OR_EQUALS);
+                setOperator(Operator.LESSER_OR_EQUAL);
                 break;
 
             case "like":
@@ -80,11 +80,11 @@ public class Filter<T> {
                 break;
 
             case "!:":
-                setOperator(Operator.NOT_EQUALS);
+                setOperator(Operator.NOT_EQUAL);
                 break;
 
             default:
-                setOperator(Operator.EQUALS);
+                setOperator(Operator.EQUAL);
         }
     }
 

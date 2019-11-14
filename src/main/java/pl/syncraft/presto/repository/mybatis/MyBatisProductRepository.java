@@ -4,8 +4,8 @@ import org.apache.ibatis.session.SqlSession;
 import pl.syncraft.presto.core.ProductFilter;
 import pl.syncraft.presto.core.entity.Product;
 import pl.syncraft.presto.core.repository.ProductRepository;
+import pl.syncraft.presto.web.Context;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,39 +16,25 @@ import java.util.Optional;
 public class MyBatisProductRepository implements ProductRepository {
     @Override
     public Optional<Product> get(Integer id) {
-        Product product = null;
-
-        try (SqlSession session = MyBatisUtil.buildSessionFactory().openSession()) {
-            product = session.selectOne("Product.getProduct", id);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        SqlSession session = (SqlSession) Context.getTransactionManager().getSession();
+        Product product = session.selectOne("Product.getProduct", id);
         return Optional.ofNullable(product);
     }
 
     @Override
     public List<Product> find(ProductFilter filter) {
-        System.out.println("filter: " + filter);
-        try (SqlSession session = MyBatisUtil.buildSessionFactory().openSession()) {
-            return session.selectList("findProducts", filter);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        SqlSession session = (SqlSession) Context.getTransactionManager().getSession();
+        return session.selectList("findProducts", filter);
     }
 
     @Override
     public Product save(Product product) {
-        try (SqlSession session = MyBatisUtil.buildSessionFactory().openSession()) {
-            if (product.getId() == null) {
-                session.insert("addProduct", product);
-            } else {
-                session.update("updateProduct", product);
-            }
+        SqlSession session = (SqlSession) Context.getTransactionManager().getSession();
 
-            session.commit();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (product.getId() == null) {
+            session.insert("addProduct", product);
+        } else {
+            session.update("updateProduct", product);
         }
 
         return product;
@@ -56,11 +42,7 @@ public class MyBatisProductRepository implements ProductRepository {
 
     @Override
     public void remove(Integer id) {
-        try (SqlSession session = MyBatisUtil.buildSessionFactory().openSession()) {
-            session.delete("deleteProduct", id);
-            session.commit();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        SqlSession session = (SqlSession) Context.getTransactionManager().getSession();
+        session.delete("deleteProduct", id);
     }
 }

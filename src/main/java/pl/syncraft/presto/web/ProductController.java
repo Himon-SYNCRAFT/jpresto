@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.syncraft.presto.core.Filter;
 import pl.syncraft.presto.core.entity.Product;
+import pl.syncraft.presto.core.usecase.ChainUseCase.GetAndRemoveProduct;
 import pl.syncraft.presto.core.usecase.Response;
 import pl.syncraft.presto.core.usecase.addnewproduct.AddNewProduct;
 import pl.syncraft.presto.core.usecase.addnewproduct.AddNewProductRequest;
@@ -12,8 +13,6 @@ import pl.syncraft.presto.core.usecase.findproducts.FindProducts;
 import pl.syncraft.presto.core.usecase.findproducts.FindProductsRequest;
 import pl.syncraft.presto.core.usecase.getproduct.GetProduct;
 import pl.syncraft.presto.core.usecase.getproduct.GetProductRequest;
-import pl.syncraft.presto.core.usecase.removeproduct.RemoveProduct;
-import pl.syncraft.presto.core.usecase.removeproduct.RemoveProductRequest;
 import pl.syncraft.presto.core.usecase.updateproduct.UpdateProduct;
 import pl.syncraft.presto.core.usecase.updateproduct.UpdateProductRequest;
 import pl.syncraft.presto.web.dto.ProductDto;
@@ -29,11 +28,11 @@ import java.util.regex.Pattern;
 @RestController
 @RequestMapping(path = "/product")
 public class ProductController {
-    UseCaseFactory useCaseFactory = UseCaseFactory.getInstance();
+    Context useCaseFactory = Context.getInstance();
 
     @GetMapping(value = "/{id}")
     public ResponseEntity getProduct(@PathVariable Integer id) {
-        GetProduct getProduct = useCaseFactory.getUseCase(GetProduct.class);
+        GetProduct getProduct = Context.getUseCase(GetProduct.class);
         Response<Product> response = getProduct.execute(new GetProductRequest(id));
 
         if (response.hasErrors()) {
@@ -45,7 +44,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity addProduct(@RequestBody ProductDto request) {
-        AddNewProduct addNewProduct = useCaseFactory.getUseCase(AddNewProduct.class);
+        AddNewProduct addNewProduct = Context.getUseCase(AddNewProduct.class);
 
         Response<Product> response = addNewProduct.execute(new AddNewProductRequest(
                 request.getName(),
@@ -61,7 +60,7 @@ public class ProductController {
 
     @PutMapping(value = "/{id}")
     public ResponseEntity updateProduct(@PathVariable Integer id, @RequestBody ProductDto request) {
-        UpdateProduct updateProduct = useCaseFactory.getUseCase(UpdateProduct.class);
+        UpdateProduct updateProduct = Context.getUseCase(UpdateProduct.class);
 
         Response<Product> response = updateProduct.execute(new UpdateProductRequest(
                 id,
@@ -78,7 +77,7 @@ public class ProductController {
 
     @GetMapping
     public ResponseEntity findProducts(@RequestParam(value = "search", required = false) String search) {
-        FindProducts findProducts = useCaseFactory.getUseCase(FindProducts.class);
+        FindProducts findProducts = Context.getUseCase(FindProducts.class);
 
         Pattern pattern = Pattern.compile("(\\w+?)(!:|>:|<:|>|<|:)(\\w+?),");
         Matcher matcher = pattern.matcher(search + ",");
@@ -139,8 +138,8 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity removeProduct(@PathVariable Integer id) {
-        RemoveProduct removeProduct = useCaseFactory.getUseCase(RemoveProduct.class);
-        Response<Integer> response = removeProduct.execute(new RemoveProductRequest(id));
+        GetAndRemoveProduct removeProduct = Context.getUseCase(GetAndRemoveProduct.class);
+        Response<Product> response = removeProduct.execute(new GetProductRequest(id));
 
         if (response.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
