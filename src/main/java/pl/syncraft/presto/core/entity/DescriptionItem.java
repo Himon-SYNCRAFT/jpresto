@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class DescriptionItem {
+    private Integer id;
     private String header;
     private String text;
     private Image image;

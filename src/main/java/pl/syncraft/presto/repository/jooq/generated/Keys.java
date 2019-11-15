@@ -54,6 +54,8 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final ForeignKey<DescriptionsRecord, ImagesRecord> DESCRIPTIONS__DESCRIPTIONS_IMAGES_FK = ForeignKeys0.DESCRIPTIONS__DESCRIPTIONS_IMAGES_FK;
+    public static final ForeignKey<DescriptionsRecord, ProductsRecord> DESCRIPTIONS__DESCRIPTIONS_PRODUCTS_FK = ForeignKeys0.DESCRIPTIONS__DESCRIPTIONS_PRODUCTS_FK;
     public static final ForeignKey<ProductCategoriesRecord, ProductsRecord> PRODUCT_CATEGORIES__PRODUCT_CATEGORIES_PRODUCTS_FK = ForeignKeys0.PRODUCT_CATEGORIES__PRODUCT_CATEGORIES_PRODUCTS_FK;
     public static final ForeignKey<ProductCategoriesRecord, CategoriesRecord> PRODUCT_CATEGORIES__PRODUCT_CATEGORIES_CATEGORIES_FK = ForeignKeys0.PRODUCT_CATEGORIES__PRODUCT_CATEGORIES_CATEGORIES_FK;
     public static final ForeignKey<ProductImagesRecord, ProductsRecord> PRODUCT_IMAGES__PRODUCT_IMAGES_PRODUCTS_FK = ForeignKeys0.PRODUCT_IMAGES__PRODUCT_IMAGES_PRODUCTS_FK;
@@ -82,6 +84,8 @@ public class Keys {
     }
 
     private static class ForeignKeys0 {
+        public static final ForeignKey<DescriptionsRecord, ImagesRecord> DESCRIPTIONS__DESCRIPTIONS_IMAGES_FK = Internal.createForeignKey(Keys.IMAGES_PK, Descriptions.DESCRIPTIONS, "descriptions__descriptions_images_fk", Descriptions.DESCRIPTIONS.IMAGE);
+        public static final ForeignKey<DescriptionsRecord, ProductsRecord> DESCRIPTIONS__DESCRIPTIONS_PRODUCTS_FK = Internal.createForeignKey(Keys.PRODUCTS_PK, Descriptions.DESCRIPTIONS, "descriptions__descriptions_products_fk", Descriptions.DESCRIPTIONS.PRODUCT_ID);
         public static final ForeignKey<ProductCategoriesRecord, ProductsRecord> PRODUCT_CATEGORIES__PRODUCT_CATEGORIES_PRODUCTS_FK = Internal.createForeignKey(Keys.PRODUCTS_PK, ProductCategories.PRODUCT_CATEGORIES, "product_categories__product_categories_products_fk", ProductCategories.PRODUCT_CATEGORIES.PRODUCT_ID);
         public static final ForeignKey<ProductCategoriesRecord, CategoriesRecord> PRODUCT_CATEGORIES__PRODUCT_CATEGORIES_CATEGORIES_FK = Internal.createForeignKey(Keys.CATEGORIES_PK, ProductCategories.PRODUCT_CATEGORIES, "product_categories__product_categories_categories_fk", ProductCategories.PRODUCT_CATEGORIES.CATEGORY_ID);
         public static final ForeignKey<ProductImagesRecord, ProductsRecord> PRODUCT_IMAGES__PRODUCT_IMAGES_PRODUCTS_FK = Internal.createForeignKey(Keys.PRODUCTS_PK, ProductImages.PRODUCT_IMAGES, "product_images__product_images_products_fk", ProductImages.PRODUCT_IMAGES.PRODUCT_ID);

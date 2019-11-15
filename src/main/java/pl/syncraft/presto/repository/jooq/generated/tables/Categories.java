@@ -48,7 +48,7 @@ public class Categories extends TableImpl<CategoriesRecord> {
     /**
      * The column <code>public.categories.id</code>.
      */
-    public final TableField<CategoriesRecord, Integer> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('categories_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<CategoriesRecord, Integer> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("nextval('categories_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.categories.name</code>.

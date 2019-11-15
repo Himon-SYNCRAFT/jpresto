@@ -1,10 +1,10 @@
 package product
 
-import pl.syncraft.presto.core.Filter
+import pl.syncraft.presto.core.filters.Filter
 import pl.syncraft.presto.core.entity.Product
 import pl.syncraft.presto.core.repository.ProductRepository
-import pl.syncraft.presto.core.usecase.findproducts.FindProducts
-import pl.syncraft.presto.core.usecase.findproducts.FindProductsRequest
+import pl.syncraft.presto.core.usecase.FindProducts.FindProducts
+import pl.syncraft.presto.core.usecase.FindProducts.FindProductsRequest
 import spock.lang.Specification
 
 class TestFindProducts extends Specification {

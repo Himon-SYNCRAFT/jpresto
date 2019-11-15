@@ -1,14 +1,21 @@
 package pl.syncraft.presto.web;
 
 import pl.syncraft.presto.TransactionManager;
+import pl.syncraft.presto.core.repository.CategoryRepository;
+import pl.syncraft.presto.core.repository.ImageRepository;
 import pl.syncraft.presto.core.repository.ProductRepository;
-import pl.syncraft.presto.core.usecase.ChainUseCase.GetAndRemoveProduct;
+import pl.syncraft.presto.core.usecase.AddCategoryToProduct.AddCategoryToProduct;
+import pl.syncraft.presto.core.usecase.AddImageToProduct.AddImageToProduct;
+import pl.syncraft.presto.core.usecase.AddNewProduct.AddNewProduct;
+import pl.syncraft.presto.core.usecase.FindProducts.FindProducts;
+import pl.syncraft.presto.core.usecase.GetProduct.GetProduct;
+import pl.syncraft.presto.core.usecase.RemoveCategoryFromProduct.RemoveCategoryFromProduct;
+import pl.syncraft.presto.core.usecase.RemoveImageFromProduct.RemoveImageFromProduct;
+import pl.syncraft.presto.core.usecase.RemoveProduct.RemoveProduct;
+import pl.syncraft.presto.core.usecase.UpdateProduct.UpdateProduct;
 import pl.syncraft.presto.core.usecase.UseCase;
-import pl.syncraft.presto.core.usecase.addnewproduct.AddNewProduct;
-import pl.syncraft.presto.core.usecase.findproducts.FindProducts;
-import pl.syncraft.presto.core.usecase.getproduct.GetProduct;
-import pl.syncraft.presto.core.usecase.removeproduct.RemoveProduct;
-import pl.syncraft.presto.core.usecase.updateproduct.UpdateProduct;
+import pl.syncraft.presto.repository.jooq.JooqCategoryRepository;
+import pl.syncraft.presto.repository.jooq.JooqImageRepository;
 import pl.syncraft.presto.repository.jooq.JooqProductRepository;
 import pl.syncraft.presto.repository.jooq.JooqTransactionManager;
 
@@ -24,6 +31,8 @@ public class Context {
 //    public static ProductRepository productRepository = new InMemoryProductRepository();
 //    public static ProductRepository productRepository = new MyBatisProductRepository();
     public static ProductRepository productRepository = new JooqProductRepository();
+    public static CategoryRepository categoryRepository = new JooqCategoryRepository();
+    public static ImageRepository imageRepository = new JooqImageRepository();
 
     private Context() {
 
@@ -62,9 +71,16 @@ public class Context {
             return (I) new FindProducts(productRepository);
         } else if (clazz == RemoveProduct.class) {
             return (I) new RemoveProduct(productRepository);
-        } else if (clazz == GetAndRemoveProduct.class) {
-            return (I) new GetAndRemoveProduct();
+        } else if (clazz == AddCategoryToProduct.class) {
+            return (I) new AddCategoryToProduct(productRepository, categoryRepository);
+        } else if (clazz == RemoveCategoryFromProduct.class) {
+            return (I) new RemoveCategoryFromProduct(productRepository, categoryRepository);
+        } else if (clazz == AddImageToProduct.class) {
+            return (I) new AddImageToProduct(productRepository, imageRepository);
+        } else if (clazz == RemoveImageFromProduct.class) {
+            return (I) new RemoveImageFromProduct(productRepository, imageRepository);
         }
+
         throw new RuntimeException("Cannot find UseCase for provided input");
     };
 }

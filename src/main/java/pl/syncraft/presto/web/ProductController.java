@@ -3,18 +3,29 @@ package pl.syncraft.presto.web;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.syncraft.presto.core.Filter;
+import pl.syncraft.presto.core.filters.Filter;
 import pl.syncraft.presto.core.entity.Product;
-import pl.syncraft.presto.core.usecase.ChainUseCase.GetAndRemoveProduct;
+import pl.syncraft.presto.core.usecase.AddCategoryToProduct.AddCategoryToProduct;
+import pl.syncraft.presto.core.usecase.AddCategoryToProduct.AddCategoryToProductRequest;
+import pl.syncraft.presto.core.usecase.AddImageToProduct.AddImageToProduct;
+import pl.syncraft.presto.core.usecase.AddImageToProduct.AddImageToProductRequest;
+import pl.syncraft.presto.core.usecase.AddNewProduct.AddNewProduct;
+import pl.syncraft.presto.core.usecase.AddNewProduct.AddNewProductRequest;
+import pl.syncraft.presto.core.usecase.FindProducts.FindProducts;
+import pl.syncraft.presto.core.usecase.FindProducts.FindProductsRequest;
+import pl.syncraft.presto.core.usecase.GetProduct.GetProduct;
+import pl.syncraft.presto.core.usecase.GetProduct.GetProductRequest;
+import pl.syncraft.presto.core.usecase.RemoveCategoryFromProduct.RemoveCategoryFromProduct;
+import pl.syncraft.presto.core.usecase.RemoveCategoryFromProduct.RemoveCategoryFromProductRequest;
+import pl.syncraft.presto.core.usecase.RemoveImageFromProduct.RemoveImageFromProduct;
+import pl.syncraft.presto.core.usecase.RemoveImageFromProduct.RemoveImageFromProductRequest;
+import pl.syncraft.presto.core.usecase.RemoveProduct.RemoveProduct;
+import pl.syncraft.presto.core.usecase.RemoveProduct.RemoveProductRequest;
 import pl.syncraft.presto.core.usecase.Response;
-import pl.syncraft.presto.core.usecase.addnewproduct.AddNewProduct;
-import pl.syncraft.presto.core.usecase.addnewproduct.AddNewProductRequest;
-import pl.syncraft.presto.core.usecase.findproducts.FindProducts;
-import pl.syncraft.presto.core.usecase.findproducts.FindProductsRequest;
-import pl.syncraft.presto.core.usecase.getproduct.GetProduct;
-import pl.syncraft.presto.core.usecase.getproduct.GetProductRequest;
-import pl.syncraft.presto.core.usecase.updateproduct.UpdateProduct;
-import pl.syncraft.presto.core.usecase.updateproduct.UpdateProductRequest;
+import pl.syncraft.presto.core.usecase.UpdateProduct.UpdateProduct;
+import pl.syncraft.presto.core.usecase.UpdateProduct.UpdateProductRequest;
+import pl.syncraft.presto.web.dto.CategoryId;
+import pl.syncraft.presto.web.dto.ImageUrl;
 import pl.syncraft.presto.web.dto.ProductDto;
 
 import java.util.List;
@@ -29,6 +40,10 @@ import java.util.regex.Pattern;
 @RequestMapping(path = "/product")
 public class ProductController {
     Context useCaseFactory = Context.getInstance();
+
+    private class RequestCategory {
+        public Integer categoryId;
+    }
 
     @GetMapping(value = "/{id}")
     public ResponseEntity getProduct(@PathVariable Integer id) {
@@ -138,8 +153,62 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity removeProduct(@PathVariable Integer id) {
-        GetAndRemoveProduct removeProduct = Context.getUseCase(GetAndRemoveProduct.class);
-        Response<Product> response = removeProduct.execute(new GetProductRequest(id));
+        RemoveProduct removeProduct = Context.getUseCase(RemoveProduct.class);
+        Response<Integer> response = removeProduct.execute(new RemoveProductRequest(id));
+
+        if (response.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/categories")
+    public ResponseEntity addCategoryToProduct(@PathVariable Integer id, @RequestBody CategoryId input) {
+        AddCategoryToProduct addCategoryToProduct = Context.getUseCase(AddCategoryToProduct.class);
+        Response<Product> response = addCategoryToProduct.execute(
+                new AddCategoryToProductRequest(id, input.getCategoryId()));
+
+        if (response.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}/categories")
+    public ResponseEntity removeCategoryFromProduct(@PathVariable Integer id, @RequestBody CategoryId input) {
+        RemoveCategoryFromProduct removeCategoryFromProduct = Context
+                .getUseCase(RemoveCategoryFromProduct.class);
+        Response<Product> response = removeCategoryFromProduct.execute(
+                new RemoveCategoryFromProductRequest(id, input.getCategoryId()));
+
+        if (response.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/images")
+    public ResponseEntity addImageToProduct(@PathVariable Integer id, @RequestBody ImageUrl input) {
+        AddImageToProduct useCase = Context.getUseCase(AddImageToProduct.class);
+        Response<Product> response = useCase.execute(
+                new AddImageToProductRequest(id, input.getImageUrl()));
+
+        if (response.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}/images")
+    public ResponseEntity removeImageFromProduct(@PathVariable Integer id, @RequestBody ImageUrl input) {
+        RemoveImageFromProduct useCase = Context
+                .getUseCase(RemoveImageFromProduct.class);
+        Response<Product> response = useCase.execute(
+                new RemoveImageFromProductRequest(id, input.getImageUrl()));
 
         if (response.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);

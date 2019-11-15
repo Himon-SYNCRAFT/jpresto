@@ -1,6 +1,6 @@
 package pl.syncraft.presto.repository.mybatis.mapper;
 
-import pl.syncraft.presto.core.ProductFilter;
+import pl.syncraft.presto.core.filters.ProductFilter;
 import pl.syncraft.presto.core.entity.Product;
 
 import java.util.List;

@@ -2,8 +2,8 @@ package product
 
 import pl.syncraft.presto.core.entity.Product
 import pl.syncraft.presto.core.repository.ProductRepository
-import pl.syncraft.presto.core.usecase.addnewproduct.AddNewProduct
-import pl.syncraft.presto.core.usecase.addnewproduct.AddNewProductRequest
+import pl.syncraft.presto.core.usecase.AddNewProduct.AddNewProduct
+import pl.syncraft.presto.core.usecase.AddNewProduct.AddNewProductRequest
 import spock.lang.Specification
 
 class TestAddNewProduct extends Specification {

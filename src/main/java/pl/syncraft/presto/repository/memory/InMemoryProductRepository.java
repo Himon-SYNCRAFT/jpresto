@@ -1,6 +1,8 @@
 package pl.syncraft.presto.repository.memory;
 
-import pl.syncraft.presto.core.ProductFilter;
+import pl.syncraft.presto.core.filters.ProductFilter;
+import pl.syncraft.presto.core.entity.Category;
+import pl.syncraft.presto.core.entity.Image;
 import pl.syncraft.presto.core.entity.Product;
 import pl.syncraft.presto.core.repository.ProductRepository;
 
@@ -73,5 +75,24 @@ public class InMemoryProductRepository implements ProductRepository {
     @Override
     public void remove(Integer id) {
         products.remove(id);
+    }
+
+    @Override
+    public void addCategory(Product product, Category category) {
+    }
+
+    @Override
+    public void removeCategory(Product product, Category category) {
+
+    }
+
+    @Override
+    public void addImage(Product product, Image image) {
+
+    }
+
+    @Override
+    public void removeImage(Product product, Image image) {
+
     }
 }

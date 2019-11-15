@@ -1,7 +1,9 @@
 package pl.syncraft.presto.repository.mybatis;
 
 import org.apache.ibatis.session.SqlSession;
-import pl.syncraft.presto.core.ProductFilter;
+import pl.syncraft.presto.core.filters.ProductFilter;
+import pl.syncraft.presto.core.entity.Category;
+import pl.syncraft.presto.core.entity.Image;
 import pl.syncraft.presto.core.entity.Product;
 import pl.syncraft.presto.core.repository.ProductRepository;
 import pl.syncraft.presto.web.Context;
@@ -44,5 +46,24 @@ public class MyBatisProductRepository implements ProductRepository {
     public void remove(Integer id) {
         SqlSession session = (SqlSession) Context.getTransactionManager().getSession();
         session.delete("deleteProduct", id);
+    }
+
+    @Override
+    public void addCategory(Product product, Category category) {
+    }
+
+    @Override
+    public void removeCategory(Product product, Category category) {
+
+    }
+
+    @Override
+    public void addImage(Product product, Image image) {
+
+    }
+
+    @Override
+    public void removeImage(Product product, Image image) {
+
     }
 }

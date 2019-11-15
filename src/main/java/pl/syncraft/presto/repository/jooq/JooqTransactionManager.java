@@ -2,6 +2,7 @@ package pl.syncraft.presto.repository.jooq;
 
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
+import org.jooq.conf.Settings;
 import org.jooq.impl.DSL;
 import pl.syncraft.presto.TransactionManager;
 
@@ -26,7 +27,10 @@ public class JooqTransactionManager implements TransactionManager<DSLContext> {
                 throw new RuntimeException(e);
             }
 
-            session = DSL.using(connection, SQLDialect.POSTGRES);
+            Settings settings = new Settings();
+            settings.withRenderFormatted(true);
+
+            session = DSL.using(connection, SQLDialect.POSTGRES, settings);
         }
 
         System.out.println("SessionId: " + id);
@@ -43,7 +47,6 @@ public class JooqTransactionManager implements TransactionManager<DSLContext> {
 
         try {
             connection.commit();
-            System.out.println("commit");
         } catch (Exception e) {
             connection.rollback();
         } finally {

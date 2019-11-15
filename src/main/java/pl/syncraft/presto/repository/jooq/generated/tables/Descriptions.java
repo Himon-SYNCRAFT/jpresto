@@ -30,7 +30,7 @@ import java.util.List;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Descriptions extends TableImpl<DescriptionsRecord> {
 
-    private static final long serialVersionUID = -2140504389;
+    private static final long serialVersionUID = 1170682915;
 
     /**
      * The reference instance of <code>public.descriptions</code>
@@ -48,7 +48,7 @@ public class Descriptions extends TableImpl<DescriptionsRecord> {
     /**
      * The column <code>public.descriptions.id</code>.
      */
-    public final TableField<DescriptionsRecord, Integer> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('descriptions_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+    public final TableField<DescriptionsRecord, Integer> ID = createField(DSL.name("id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("nextval('descriptions_id_seq'::regclass)", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
      * The column <code>public.descriptions.header</code>.
@@ -69,6 +69,11 @@ public class Descriptions extends TableImpl<DescriptionsRecord> {
      * The column <code>public.descriptions.type</code>.
      */
     public final TableField<DescriptionsRecord, Integer> TYPE = createField(DSL.name("type"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
+
+    /**
+     * The column <code>public.descriptions.product_id</code>.
+     */
+    public final TableField<DescriptionsRecord, Integer> PRODUCT_ID = createField(DSL.name("product_id"), org.jooq.impl.SQLDataType.INTEGER.nullable(false), this, "");
 
     /**
      * Create a <code>public.descriptions</code> table reference
@@ -129,6 +134,19 @@ public class Descriptions extends TableImpl<DescriptionsRecord> {
     }
 
     @Override
+    public List<ForeignKey<DescriptionsRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<DescriptionsRecord, ?>>asList(Keys.DESCRIPTIONS__DESCRIPTIONS_IMAGES_FK, Keys.DESCRIPTIONS__DESCRIPTIONS_PRODUCTS_FK);
+    }
+
+    public Images images() {
+        return new Images(this, Keys.DESCRIPTIONS__DESCRIPTIONS_IMAGES_FK);
+    }
+
+    public Products products() {
+        return new Products(this, Keys.DESCRIPTIONS__DESCRIPTIONS_PRODUCTS_FK);
+    }
+
+    @Override
     public Descriptions as(String alias) {
         return new Descriptions(DSL.name(alias), this);
     }
@@ -155,11 +173,11 @@ public class Descriptions extends TableImpl<DescriptionsRecord> {
     }
 
     // -------------------------------------------------------------------------
-    // Row5 type methods
+    // Row6 type methods
     // -------------------------------------------------------------------------
 
     @Override
-    public Row5<Integer, String, String, String, Integer> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Integer, String, String, String, Integer, Integer> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 }
